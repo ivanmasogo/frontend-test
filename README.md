@@ -1,54 +1,43 @@
-¡Bienvenido a la prueba técnica! En ViveLibre, trabajamos con un stack tecnológico que abarca Vue.js, Javascript, TypeScript y diversas tecnologías de comunicación en tiempo real como SIP, Asterisk, SSE (Server-Sent Events), y WebSockets. Buscamos un desarrollador frontend con una sólida comprensión de JavaScript y Vue para reforzar nuestro equipo.
+# Prueba Técnica
 
-La prueba técnica consta de dos partes, y su objetivo es evaluar tus habilidades para trabajar con tecnologías frontend modernas, identificar y corregir errores, y desarrollar soluciones funcionales de manera eficiente.
+## Objetivos
+El objetivo principal es cumplir con los requerimientos de la prueba técnica, simulando un desarrollo avanzado en un entorno real. Para ello, me he enfocado en todo momento en seguir las mejores prácticas, priorizando siempre un código escalable, mantenible y eficiente.
 
+## Errores Identificados
 
-## Instrucciones
+### 1. Error al instalar dependencias
+Al intentar instalar las dependencias del proyecto, encontré un error relacionado con un repositorio privado de Nexus en el archivo `package-lock.json`, lo que impedía la instalación de las dependencias. Para solucionarlo, eliminé el archivo y volví a ejecutar `npm install`, lo que permitió la correcta instalación de las dependencias sin problemas.
 
-Hemos preparado un [repositorio](https://github.com/desarrollo-vivelibre/frontend-test) que contiene un proyecto que simula una parte de una aplicación real. El proyecto tiene algunos errores y funcionalidades incompletas que debes corregir. Deberás hacer un fork del repositorio, trabajar sobre los fallos/requisitos especificados, subir los commits separados y ordenados, y luego comparte con nosotros el repositorio con tus soluciones.
+### 2. Dependencia faltante
+Al intentar ejecutar el proyecto, se presentó un error relacionado con una dependencia faltante: `@popperjs/core`. Este error ocurre porque Bootstrap necesita esta librería para funcionar correctamente. Lo he solucionado instalando la dependencia faltante.
 
-### **Parte 1: Implementación de Login**
-En esta parte de la prueba, el diseño del login ya está maquetado, pero la funcionalidad aún no está implementada. Tu tarea es:
+### 3. Emit del componente ProductCard
 
-Implementar la funcionalidad de login:
-- Debes conectar el formulario de login con un sistema de autenticación simulado  utilizando una [API externa](https://fakestoreapi.com/).
-- Validar el formulario, asegurándote de que los campos requeridos han sido rellenados y los valores de entrada sean correctos (por ejemplo, usuario y contraseña).
-- Implementar un sistema de mensajes de error o éxito para notificar al usuario el estado de la autenticación. En caso de que la autenticación sea exitosa, el token debe ser persistido en el navegador.
-- Una vez autenticado, redirigir al usuario a una vista principal o dashboard.
-- Los estilos actuales son muy básicos, por lo que si lo prefieres, puedes mejorar su apariencia, usabilidad o experiencia de usuario(Esto es totalmente opcional).
+En el componente ProductCard, el nombre del emit estaba en camelCase (`this.$emit('productFavoriteClicked', this.product.id)`). En la View de productos, donde se recoge el emit, encontramos el siguiente código: `v-on:product-favorite-clicked="toggleProductFavorite(products, product.id)"`. Como podemos ver, el nombre del evento está en kebab-case, mientras que el emit en el componente hijo estaba en camelCase.
 
-### **Parte 2: Funcionalidad de Productos Favoritos**
-En la segunda parte de la prueba, se requiere que corrijas un fallo relacionado con la funcionalidad de "productos favoritos". Actualmente, los usuarios pueden marcar productos como favoritos, pero la funcionalidad no está funcionando correctamente.
+A diferencia de los nombres de componentes y props, con los emits no hay transformación automática de nomenclatura. Por lo tanto, siguiendo la recomendación de Vue, he modificado el nombre del evento emitido en el componente hijo a kebab-case.
 
-Revisar y corregir la funcionalidad de favoritos:
-El sistema debería permitir a los usuarios seleccionar y deseleccionar productos como favoritos.
-Esta funcionalidad contiene algunos problemas. **Explica detalladamente con comentarios la causa de los errores encontrados y como los has solucionado.**
+Además, en el componente padre, en `v-on:product-favorite-clicked="toggleProductFavorite(products, product.id)"`, se observa que se están pasando dos argumentos, lo cual es incorrecto. Aquí debería ir solo el nombre del método al que llama el emit. Por otro lado, el método `toggleProductFavorite` tiene que recibir un solo argumento, ya que el hijo emite solo el id del producto.
 
-**Pautas de Evaluación**
-- Calidad del código: Legibilidad, estructura, y buenas prácticas.
-- Resolución de problemas: Habilidad para identificar y corregir errores.
-- Funcionalidad completa: Cumplimiento de los requisitos y funcionamiento correcto de las funcionalidades.
-- Documentación: Descripción clara de los cambios realizados con comentarios en el código.
+### 4: Duplicación de llamadas en created y mounted
 
-**¡Buena suerte y gracias por participar en el proceso de selección!**
+En la view de los productos, se realizaban dos llamadas a la API para traer los productos, tanto en el ciclo de vida created como en mounted.
+Esto provocaba dos llamadas idénticas a la API, lo que ocasiona una pérdida de rendimiento.
+Teniamos una llamada cuando se crea el componente y otra cuando se monta. Hay que eliminar una, decidí eliminar la de mounted porque no necesitamos esperar a que se monte el componente para traernos los productos, tenerla en el created hace que un hipotético usuario perciba la carga de datos más rápida. 
 
-### Environment
-```
-Node V14.20.1
-NPM V7.10.0
-VueJs 2
-Javascript
-```
+### 5: Falta de async/await para manejar promesa
 
-### Prepare for development
-```
-npm install
-npm run serve
-```
+La llamada a `fetchProducts()` en el hook created de la view de los productos, no se estaba manejando correctamente. El método created debe ser async y se debe utilizar await delante de la promesa de la llamada a la API.
+Si no se hace así, tras invocar a `fetchProducts()`, Vue va a continuar con su ciclo de vida, lo que va a provocar que el componente se renderice antes de que la llamada a la API termine, lo que puede resultar en que el componente se muestre con datos incompletos o sin datos, ocasionando comportamientos no deseados.
 
-### External API
-https://fakestoreapi.com/
+## Mejoras Implementadas
 
-### PAGES
-- [" /"] Main - Products List
-- [" /login"] Authentication
+- Implementación básica de ESLint y Prettier para mejorar la calidad del código.
+- Reorganización de la estructura del proyecto para mayor claridad y escalabilidad.
+- Implementación de rutas absolutas para facilitar las importaciones.
+- Implementación modular de Axios para una mejor organización de las llamadas a API.
+- Uso de Vuex para manejar el estado de la aplicación de manera centralizada, simulando una app real con múltiples componentes que dependen de la autenticación de usuarios y la gestión de productos favoritos.
+- Implementación de Mixin para manejar formularios de forma más eficiente, facilitando una hipotética reutilización.
+- Maquetación con BEM, mejoras en el diseño responsivo y mejoras en accesibilidad.
+- Documentación para facilitar la comprensión del proyecto.
+- Configuración de pruebas unitarias con Jest, implementando un test para verificar el funcionamiento del login.
