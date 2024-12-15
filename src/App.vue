@@ -87,4 +87,9 @@ nav a {
 nav a.router-link-exact-active {
   color: #42b983;
 }
+
+ul,
+ol {
+  list-style: none;
+}
 </style>
