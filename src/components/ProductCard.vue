@@ -12,17 +12,15 @@
 export default {
   name: 'ProductCard',
   props: ['product'],
-  data () {
-    return {
-
-    }
+  data() {
+    return {};
   },
   methods: {
-    onFavoriteClicked () {
-      this.$emit('productFavoriteClicked', this.product.id)
-    }
-  }
-}
+    onFavoriteClicked() {
+      this.$emit('productFavoriteClicked', this.product.id);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -67,11 +65,11 @@ export default {
 }
 
 span.icono.favorite.selected::before {
-  background-image: url("../assets/favorite-filled-red.svg");
+  background-image: url('../assets/favorite-filled-red.svg');
 }
 
 span.icono.favorite::before {
-  background-image: url("../assets/favorite-filled-muted.svg");
+  background-image: url('../assets/favorite-filled-muted.svg');
 }
 
 .favorite:hover {
@@ -91,7 +89,7 @@ span.icono {
 }
 
 span.icono::before {
-  content: "";
+  content: '';
   width: 2.4rem;
   height: 2.4rem;
   display: inline-block;

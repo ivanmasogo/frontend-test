@@ -1,56 +1,57 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import ProductsList from '../views/ProductsList.vue'
-import { tokenStorageName } from '../helpers/constants'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import ProductsList from '../views/ProductsList.vue';
+import { tokenStorageName } from '../helpers/constants';
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
     name: 'home',
     component: ProductsList,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true },
   },
   {
     path: '/login',
     name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '../views/Login.vue'),
-    meta: { requiresAuth: false }
-  }
-]
+    component: () =>
+      import(/* webpackChunkName: "login" */ '../views/Login.vue'),
+    meta: { requiresAuth: false },
+  },
+];
 
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
-})
+  routes,
+});
 
 // ELIMINAR
 // Route guard
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem(tokenStorageName)
+  const token = localStorage.getItem(tokenStorageName);
 
   // Si la ruta requiere autenticación
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!token) {
-      next({ name: 'login' })
+      next({ name: 'login' });
     } else {
-      next()
+      next();
     }
-  } else if (to.matched.some(record => !record.meta.requiresAuth)) {
+  } else if (to.matched.some((record) => !record.meta.requiresAuth)) {
     // Si la ruta NO requiere autenticación (login en este caso)
     if (token) {
       // Si el token existe, redirige al home (usuario ya está logueado)
-      next({ name: 'home' })
+      next({ name: 'home' });
     } else {
       // Si no hay token, deja que acceda al login
-      next()
+      next();
     }
   } else {
     // En cualquier otro caso, sigue la navegación
-    next()
+    next();
   }
-})
+});
 
-export default router
+export default router;
