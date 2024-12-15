@@ -6,6 +6,8 @@
       :class="{
         'product-item__favorite-icon--selected': isFavorite(product.id),
       }"
+      role="button"
+      aria-label="Toggle favorite"
     ></span>
     <img
       :src="product.image"

@@ -17,10 +17,11 @@
           placeholder="Username"
           @input="onChange($event, 'username')"
           v-model="user.username"
+          aria-describedby="username-error"
         />
         <label for="username"> Username </label>
       </div>
-      <ul class="form-signin__errors" v-if="hasUserError">
+      <ul class="form-signin__errors" v-if="hasUserError" id="username-error">
         <li
           class="form-signin__error-text"
           v-for="(error, index) in errors.username"
@@ -38,10 +39,15 @@
         placeholder="Password"
         @input="onChange($event, 'password')"
         v-model="user.password"
+        aria-describedby="password-error"
       />
       <label for="password"> Password </label>
     </div>
-    <ul class="form-signin__errors mt-0" v-if="hasPasswordError">
+    <ul
+      class="form-signin__errors mt-0"
+      v-if="hasPasswordError"
+      id="password-error"
+    >
       <li
         class="form-signin__error-text"
         v-for="(error, index) in errors.password"
