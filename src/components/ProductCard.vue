@@ -65,11 +65,11 @@ export default {
 }
 
 span.icono.favorite.selected::before {
-  background-image: url('../assets/favorite-filled-red.svg');
+  background-image: url('../assets/images/favorite-filled-red.svg');
 }
 
 span.icono.favorite::before {
-  background-image: url('../assets/favorite-filled-muted.svg');
+  background-image: url('../assets/images/favorite-filled-muted.svg');
 }
 
 .favorite:hover {
@@ -77,11 +77,11 @@ span.icono.favorite::before {
 }
 
 .favorite-icon {
-  background-image: url('../assets/favorite-filled-muted.svg');
+  background-image: url('../assets/images/favorite-filled-muted.svg');
 }
 
 .favorite-icon.selected {
-  background-image: url('../assets/favorite-filled-red.svg');
+  background-image: url('../assets/images/favorite-filled-red.svg');
 }
 
 span.icono {

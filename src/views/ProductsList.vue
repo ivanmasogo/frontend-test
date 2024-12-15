@@ -20,7 +20,7 @@
 
 <script>
 import axios from 'axios';
-import ProductCard from '../components/ProductCard.vue';
+import ProductCard from '@/components/ProductCard.vue';
 import { getProductsListEndpoint } from '@/helpers/constants';
 
 export default {
