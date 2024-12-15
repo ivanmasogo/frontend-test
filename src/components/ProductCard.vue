@@ -1,23 +1,46 @@
 <template>
   <div class="product-item">
-    <span class="icono favorite"></span>
-    <img :src="product.image" :alt="product.title" class="product-image" />
-    <h3 class="product-title">{{ product.title }}</h3>
-    <p class="product-description">{{ product.description }}</p>
+    <span
+      @click="onFavoriteClicked"
+      class="product-item__favorite-icon"
+      :class="{
+        'product-item__favorite-icon--selected': isFavorite(product.id),
+      }"
+    ></span>
+    <img
+      :src="product.image"
+      :alt="product.title"
+      class="product-item__image"
+    />
+    <h3 class="product-item__title">{{ product.title }}</h3>
+    <p class="product-item__description">{{ product.description }}</p>
     <p><strong>Price:</strong> ${{ product.price }}</p>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   name: 'ProductCard',
-  props: ['product'],
-  data() {
-    return {};
+  props: {
+    product: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapGetters('favorites', ['isFavorite']),
   },
   methods: {
+    /**
+     * Maneja el evento cuando un usuario hace clic en el icono de favorito.
+     * Emite un evento para notificar al componente padre con el ID del producto.
+     *
+     * @returns {void}
+     */
     onFavoriteClicked() {
-      this.$emit('productFavoriteClicked', this.product.id);
+      this.$emit('product-favorite-clicked', this.product.id); // Emite el ID del producto al componente padre para cambiar su estado de favorito
     },
   },
 };
@@ -32,14 +55,14 @@ export default {
   text-align: center;
 }
 
-.product-image {
+.product-item__image {
   width: 150px;
   height: 150px;
   object-fit: scale-down;
   margin-bottom: 10px;
 }
 
-.product-title {
+.product-item__title {
   display: block;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -48,7 +71,7 @@ export default {
   line-height: 1.8em;
 }
 
-.product-description {
+.product-item__description {
   display: block;
   text-overflow: ellipsis;
   word-wrap: break-word;
@@ -57,38 +80,16 @@ export default {
   line-height: 1.8em;
 }
 
-.favorite {
+.product-item__favorite-icon {
   position: absolute;
   right: 20px;
   width: 30px;
   height: 30px;
-}
-
-span.icono.favorite.selected::before {
-  background-image: url('../assets/images/favorite-filled-red.svg');
-}
-
-span.icono.favorite::before {
-  background-image: url('../assets/images/favorite-filled-muted.svg');
-}
-
-.favorite:hover {
-  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
-}
-
-.favorite-icon {
-  background-image: url('../assets/images/favorite-filled-muted.svg');
-}
-
-.favorite-icon.selected {
-  background-image: url('../assets/images/favorite-filled-red.svg');
-}
-
-span.icono {
   display: inline-block;
+  background-image: url('@/assets/images/favorite-filled-muted.svg');
 }
 
-span.icono::before {
+.product-item__favorite-icon::before {
   content: '';
   width: 2.4rem;
   height: 2.4rem;
@@ -97,5 +98,19 @@ span.icono::before {
   background-position: center center;
   background-size: contain;
   vertical-align: text-bottom;
+  background-image: url('@/assets/images/favorite-filled-muted.svg');
+}
+
+.product-item__favorite-icon:hover {
+  filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 0.4));
+  cursor: pointer;
+}
+
+.product-item__favorite-icon--selected {
+  background-image: url('@/assets/images/favorite-filled-red.svg');
+}
+
+.product-item__favorite-icon--selected::before {
+  background-image: url('@/assets/images/favorite-filled-red.svg');
 }
 </style>

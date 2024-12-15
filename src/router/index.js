@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import ProductsList from '../views/ProductsList.vue';
-import { tokenStorageName } from '../helpers/constants';
+import ProductsListView from '@/views/ProductsListView.vue';
+import { tokenStorageName } from '@/helpers/constants';
 
 Vue.use(VueRouter);
 
@@ -9,14 +9,13 @@ const routes = [
   {
     path: '/',
     name: 'home',
-    component: ProductsList,
+    component: ProductsListView,
     meta: { requiresAuth: true },
   },
   {
     path: '/login',
     name: 'login',
-    component: () =>
-      import(/* webpackChunkName: "login" */ '../views/LoginView.vue'),
+    component: () => import('@/views/LoginView.vue'),
     meta: { requiresAuth: false },
   },
 ];
@@ -27,7 +26,6 @@ const router = new VueRouter({
   routes,
 });
 
-// ELIMINAR
 // Route guard
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem(tokenStorageName);
